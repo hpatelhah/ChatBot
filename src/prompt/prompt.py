@@ -20,10 +20,12 @@ class CustomPrompt():
         return self.template.format(**input_data)
 
 
+
+
 # usage
-test = CustomPrompt("summarize this {text}")
-formatted = test.get({"text": "HI"})
-print(formatted)
+#test = CustomPrompt("summarize this {text}")
+#formatted = test.get({"text": "HI"})
+#print(formatted)
 
 print(SUMMARY_PROMPT.format(text="HII"))
 

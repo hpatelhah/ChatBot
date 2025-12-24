@@ -7,14 +7,20 @@ from config.config import EMBEDDING_MODEL,RETRIEVER_SEARCH_TYPE,RETRIEVER_K
 
 class VectorStore:
     "Manages vector store applications"
-    def __init__(self):
-        self.embeddings = BedrockEmbeddings(model=config.EMBEDDING_MODEL)
+    def __init__(self, model_id=EMBEDDING_MODEL, docs=None, retriever_search_type=RETRIEVER_SEARCH_TYPE,k=RETRIEVER_K):
+        self.model_id = model_id
+        self.embeddings = BedrockEmbeddings(model_id=model_id)
+        self.retriever_search_type = retriever_search_type
+        self.k = k
         self.vectorstore = None
         self.retriever = None
+        if docs:
+            self.create_retriever(docs, self.retriever_search_type, self.k)
 
-    def create_retriever(self, docs):
+
+    def create_retriever(self, docs, retriever_search_type=RETRIEVER_SEARCH_TYPE,k=RETRIEVER_K):
         self.vectorstore = FAISS.from_documents(docs, self.embeddings)
-        self.retriever = self.vectorstore.as_retriever(search_type= RETRIEVER_SEARCH_TYPE, kwarg={'k': RETRIEVER_K})
+        self.retriever = self.vectorstore.as_retriever(search_type= retriever_search_type, search_kwarg={'k': k})
 
     def get_retriever(self):
 
@@ -23,8 +29,10 @@ class VectorStore:
         else:
             return self.retriever
             
-    def retrieve(query: str):
+    def retrieve(self, query: str):
         if self.retriever is None:
             print("run create_retriever(docs) method first")
         else:
-            self.retriever.invoke(query)
+            return self.retriever.invoke(query)
+
+        
