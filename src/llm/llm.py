@@ -2,7 +2,7 @@ from langchain_aws import ChatBedrockConverse
 
 class AWSBedrockLLm():
     
-    def __init__(self, model_id, structured_output=None):
+    def __init__(self, model_id="anthropic.claude-3-5-sonnet-20240620-v1:0", structured_output=None):
         self.model_id = model_id
         self.model = ChatBedrockConverse(model=self.model_id)
         self.structured_output_schema = structured_output

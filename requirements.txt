@@ -4,3 +4,4 @@ langchain_community==0.4.1
 langchain_core==1.2.5
 langgraph==1.0.5
 pydantic==2.12.5
+faiss-cpu
