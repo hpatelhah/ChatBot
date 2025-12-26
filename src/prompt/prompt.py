@@ -16,7 +16,7 @@ class CustomPrompt():
         self.template = PromptTemplate.from_template(template)
 
     def with_inputs(self, input_data:dict):
-        return self.template.format(**input_data)
+        return self.template.format_prompt(**input_data)
 
 
 

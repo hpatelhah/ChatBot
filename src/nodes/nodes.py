@@ -6,13 +6,19 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.prebuilt import ToolNode, tools_condition
 from vectorstore.vectorstore import VectorStore
 from prompt.prompt import SQL_PROMPT
+from util import format_docs
 
+# node design = input data, state (for history), output
+# utils required to perform task - llm, reteriver, tools
+# not all nodes require all utils
 
 class Node(ABC):
-    def __init__(self, name, state=None, prompt=None):
+    def __init__(self, name):
         self.name = name
-        self.state = State
-        self.prompt = prompt
+
+    @abstractmethod
+    def run(self, *args, **kwargs):
+        pass
 
 
 
@@ -24,27 +30,22 @@ class InputNode(Node):
 
 
 class SQLNode(Node):
-    
-    def run(self, input_data, state: State, llm, prompt=SQL_PROMPT):
 
-        return llm.invoke(SQL_PROMPT.with_inputs(**input_data))
+    def run(self, input_data, state, llm, prompt_template=SQL_PROMPT):       
+        return llm.invoke(prompt_template.with_inputs(input_data))
 
         
         
 class PromptNode(Node):
 
-    def __init__(name, state, prompt):
-        super.__init__(name, state)
-        self.prompt = prompt
-    def run(self, prompt):
-        pass
+    def run(self, prompt, state, llm):
+        return llm.invoke(prompt)
 
 class RAGNode(Node):
     def __init__(self, name,  state, vectorstore: VectorStore ,input_query=None, llm=None):
         super().__init__(name, state)
         self.input = input_query
         self.vectorstore = vectorstore
-        self.llm = llm
         if self.input:
             self.query = self.input_query
         else:
